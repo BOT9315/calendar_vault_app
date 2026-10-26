@@ -4,6 +4,18 @@ A disguised, fully functional Calendar App hiding a secure, military-grade encry
 
 ---
 
+## 📥 Download the App
+
+**[⬇️ Download Calendar Hidex APK (v1.0)](https://github.com/<USERNAME>/calendar_vault_app/releases/latest/download/Calendar_Hidex_App_v1.0.apk)**
+
+1. Android phone par upar wale link ko tap karein. APK download ho jayegi.
+2. Download hone ke baad file kholein. Agar Android bole "Install unknown apps", to browser (Chrome/Firefox) ko is permission ki ijazat dein.
+3. Install par tap karein aur app open karein.
+
+> Ye direct link GitHub **Releases** se milta hai, isliye click karte hi APK download shuru ho jaati hai.
+
+---
+
 ## 🌟 Key Features
 
 ### 1. 📅 Elegant Decoy Calendar Disguise
