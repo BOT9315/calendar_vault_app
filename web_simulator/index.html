@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar Hidex App - Interactive Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Phone Frame Simulation -->
+  <div class="phone-container">
+    <div class="phone-speaker"></div>
+    <div class="phone-camera"></div>
+
+    <div class="screen">
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span id="clock-time">09:41</span>
+        <div class="status-icons">
+          <i class="fa-solid fa-signal"></i>
+          <i class="fa-solid fa-wifi"></i>
+          <i class="fa-solid fa-battery-full"></i>
+        </div>
+      </div>
+
+      <!-- VIEW 1: DECOY CALENDAR APP -->
+      <div id="calendar-view" class="view active">
+        <div class="app-header">
+          <div class="header-left">
+            <i class="fa-solid fa-calendar-days text-primary"></i>
+            <h2 id="calendar-month-year">October 2026</h2>
+          </div>
+          <div class="header-actions">
+            <button id="theme-toggle-btn" class="icon-btn" title="Toggle Light / Dark Mode"><i class="fa-solid fa-moon"></i></button>
+            <button id="guide-info-btn" class="icon-btn" title="How to Use / Guide"><i class="fa-solid fa-circle-question"></i></button>
+            <button id="creator-info-btn" class="icon-btn" title="App Info & Creator"><i class="fa-solid fa-circle-info"></i></button>
+            <button id="prev-month-btn" class="icon-btn" title="Previous Month"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="next-month-btn" class="icon-btn" title="Next Month"><i class="fa-solid fa-chevron-right"></i></button>
+            <button id="today-btn" class="icon-btn" title="Today"><i class="fa-solid fa-calendar-check"></i></button>
+          </div>
+        </div>
+
+        <div class="calendar-wrapper">
+          <div class="weekdays-row">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="calendar-grid" class="calendar-grid">
+            <!-- Dynamic Day Cells -->
+          </div>
+        </div>
+
+        <!-- Secret Sequence Hint Toast (can be dismissed) -->
+        <div class="secret-helper-badge">
+          <i class="fa-solid fa-user-secret"></i>
+          <span>Secret Unlock: Tap dates <strong>7 &rarr; 14 &rarr; 21 &rarr; 28</strong> in order</span>
+        </div>
+
+        <!-- Decoy Events Section -->
+        <div class="events-section">
+          <div class="events-header">
+            <h4 id="selected-date-label">Events for Oct 8</h4>
+            <button id="add-event-btn" class="text-btn"><i class="fa-solid fa-plus"></i> Add Event</button>
+          </div>
+          <div id="events-list" class="events-list">
+            <!-- Decoy events -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: SECRET VAULT -->
+      <div id="vault-view" class="view">
+        <div class="vault-header">
+          <div class="vault-title">
+            <i class="fa-solid fa-shield-halved text-accent"></i>
+            <h3>HideX Vault</h3>
+          </div>
+          <div class="vault-actions">
+            <button id="browser-open-btn" class="icon-btn" title="Private Browser"><i class="fa-solid fa-globe" style="color: #38bdf8;"></i></button>
+            <button id="disguise-open-btn" class="icon-btn" title="Change App Disguise Icon"><i class="fa-solid fa-masks-theater" style="color: #fbbf24;"></i></button>
+            <button id="change-seq-btn" class="icon-btn" title="Change Vault Password"><i class="fa-solid fa-key" style="color: #a78bfa;"></i></button>
+            <button id="vault-info-btn" class="icon-btn" title="Storage details"><i class="fa-solid fa-circle-info"></i></button>
+            <button id="panic-exit-btn" class="icon-btn panic-btn" title="Panic Lock (Exit Immediately)"><i class="fa-solid fa-lock"></i></button>
+          </div>
+        </div>
+
+        <div class="persistence-banner">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Persistent Protection: Files survive app uninstall & reinstall</span>
+        </div>
+
+        <!-- Vault Tabs: 6 categories -->
+        <div class="vault-tabs">
+          <button class="tab-btn active" data-tab="all">All (<span id="count-all">0</span>)</button>
+          <button class="tab-btn" data-tab="photos">Photos (<span id="count-photos">0</span>)</button>
+          <button class="tab-btn" data-tab="videos">Videos (<span id="count-videos">0</span>)</button>
+          <button class="tab-btn" data-tab="docs">Docs (<span id="count-docs">0</span>)</button>
+          <button class="tab-btn" data-tab="audio">Audio (<span id="count-audio">0</span>)</button>
+          <button class="tab-btn" data-tab="others">Others (<span id="count-others">0</span>)</button>
+        </div>
+
+        <!-- Media Grid -->
+        <div id="media-grid" class="media-grid">
+          <!-- Vault items rendered dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="vault-empty" class="vault-empty hidden">
+          <i class="fa-solid fa-shield-halved empty-icon"></i>
+          <h4>Vault is Empty</h4>
+          <p>Import photos, videos, documents, or download from the Private Browser below.</p>
+        </div>
+
+        <!-- Import FAB -->
+        <button id="import-fab" class="fab-btn">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add to Vault</span>
+        </button>
+      </div>
+
+      <!-- MODAL: FIRST-TIME ONBOARDING GUIDE -->
+      <div id="guide-modal" class="modal hidden">
+        <div class="modal-header">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #6366f1;"></i> Welcome to HideX App
+          </span>
+          <button id="guide-close-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="setup-body" style="padding: 16px;">
+          <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 12px; line-height: 1.4;">
+            This appears as a standard Calendar app with event management, but it conceals a military-grade private vault.
+          </p>
+
+          <div style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); padding: 12px; border-radius: 12px; margin-bottom: 14px;">
+            <div style="font-weight: 700; color: #818cf8; font-size: 13px; margin-bottom: 6px;">
+              <i class="fa-solid fa-key"></i> How to Unlock Hidden Vault:
+            </div>
+            <div style="font-size: 12px; color: #e2e8f0; line-height: 1.5;">
+              Tap these 4 dates in sequence on the calendar grid:<br>
+              <strong style="color: #a5b4fc; font-size: 15px;">7  ➔  14  ➔  21  ➔  28</strong><br>
+              <span style="font-size: 11px; color: #94a3b8;">(Default code. You can change this anytime inside HideX!)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 12px; font-weight: bold; color: #f8fafc; margin-bottom: 8px;">✨ Key HideX Features:</div>
+          <ul style="font-size: 11.5px; color: #94a3b8; line-height: 1.6; margin: 0; padding-left: 18px;">
+            <li><strong style="color: #2dd4bf;">Store Any File Type:</strong> PDF, Word, Excel, Audio, Photos, Videos & Archives with AES-256.</li>
+            <li><strong style="color: #38bdf8;">Private Browser & Downloads:</strong> Browse incognito. Downloads save exclusively into vault.</li>
+            <li><strong style="color: #fbbf24;">Protected Password Change:</strong> Change password ONLY from inside vault after verification.</li>
+            <li><strong style="color: #c084fc;">Multiple App Icons:</strong> Disguise as Calculator, Notes, Clock, or Weather.</li>
+            <li><strong style="color: #4ade80;">Uninstall Protection:</strong> Files survive app deletion and restore on reinstall.</li>
+          </ul>
+
+          <button id="guide-gotit-btn" class="btn primary full-width" style="margin-top: 16px;">Got it! Start Using App</button>
+        </div>
+      </div>
+
+      <!-- MODAL: PRIVATE BROWSER -->
+      <div id="browser-modal" class="modal hidden">
+        <div class="modal-header" style="padding: 8px 12px; gap: 8px;">
+          <i class="fa-solid fa-shield text-accent" style="font-size: 16px;"></i>
+          <div style="flex: 1; display: flex; align-items: center; background: #262626; border-radius: 16px; padding: 4px 10px;">
+            <i class="fa-solid fa-lock" style="font-size: 11px; color: #38bdf8; margin-right: 6px;"></i>
+            <input type="text" id="browser-url-input" value="https://duckduckgo.com" style="background: transparent; border: none; color: #fff; font-size: 12px; width: 100%; outline: none;" />
+            <button id="browser-go-btn" style="background: none; border: none; color: #94a3b8; cursor: pointer;"><i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+          <button id="browser-download-sample-btn" class="icon-btn" title="Download Sample File to Vault"><i class="fa-solid fa-file-arrow-down" style="color: #fbbf24;"></i></button>
+          <button id="browser-close-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="background: rgba(56, 189, 248, 0.12); padding: 4px 12px; font-size: 10px; color: #38bdf8; font-weight: bold; display: flex; justify-content: space-between;">
+          <span><i class="fa-solid fa-shield-halved"></i> Incognito Active: Zero history/cookies leaked to phone</span>
+          <span id="browser-download-status">0 downloaded</span>
+        </div>
+        <div id="browser-body" style="flex: 1; padding: 14px; overflow-y: auto; background: #121212;">
+          <div style="text-align: center; padding: 20px 0;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🦆</div>
+            <h3 style="color: #fff; font-size: 16px;">DuckDuckGo Private Search</h3>
+            <p style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Private web browsing isolated inside HideX</p>
+          </div>
+          <div style="margin-top: 10px;">
+            <div style="font-size: 12px; font-weight: bold; color: #e2e8f0; margin-bottom: 8px;">Private Quick Links & Downloads:</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="browser-card" onclick="simulateBrowserDownload('Q3_Financial_Statement.xlsx', 'excel', 1450000)">
+                <i class="fa-solid fa-file-excel" style="color: #22c55e; font-size: 20px;"></i>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 12px; color: #fff;">Q3_Financial_Statement.xlsx</div>
+                  <div style="font-size: 10px; color: #94a3b8;">1.45 MB • Tap to download privately to vault</div>
+                </div>
+                <i class="fa-solid fa-download" style="color: #38bdf8;"></i>
+              </div>
+              <div class="browser-card" onclick="simulateBrowserDownload('NonDisclosure_Agreement.pdf', 'pdf', 840000)">
+                <i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 20px;"></i>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 12px; color: #fff;">NonDisclosure_Agreement.pdf</div>
+                  <div style="font-size: 10px; color: #94a3b8;">840 KB • Tap to download privately to vault</div>
+                </div>
+                <i class="fa-solid fa-download" style="color: #38bdf8;"></i>
+              </div>
+              <div class="browser-card" onclick="simulateBrowserDownload('Secret_Audio_Recording.mp3', 'audio', 3200000)">
+                <i class="fa-solid fa-file-audio" style="color: #f97316; font-size: 20px;"></i>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 12px; color: #fff;">Secret_Audio_Recording.mp3</div>
+                  <div style="font-size: 10px; color: #94a3b8;">3.2 MB • Tap to download privately to vault</div>
+                </div>
+                <i class="fa-solid fa-download" style="color: #38bdf8;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL: APP ICON DISGUISE PICKER -->
+      <div id="disguise-modal" class="modal hidden">
+        <div class="modal-header">
+          <span>Choose Home Screen Icon</span>
+          <button id="disguise-close-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="setup-body" style="padding: 16px;">
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
+            Disguise HideX on your phone's home screen as a regular utility app. Only accessible from inside the vault:
+          </p>
+          <div id="disguise-options-list" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Dynamically populated disguises -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: FULL SCREEN PHOTO/VIDEO/FILE VIEWER -->
+      <div id="viewer-modal" class="modal hidden">
+        <div class="modal-header">
+          <span id="modal-title" class="truncate">Media Details</span>
+          <div class="modal-header-actions">
+            <button id="modal-export-btn" class="icon-btn" title="Export / Unhide"><i class="fa-solid fa-download"></i></button>
+            <button id="modal-delete-btn" class="icon-btn danger" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+            <button id="modal-close-btn" class="icon-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+        <div id="modal-body" class="modal-body">
+          <!-- Image or Video Player or Document view -->
+        </div>
+      </div>
+
+      <!-- TWO-STEP SEQUENCE SETUP MODAL (INSIDE VAULT ONLY) -->
+      <div id="setup-modal" class="modal hidden">
+        <div class="modal-header">
+          <span id="setup-step-title">Step 1: Verify Current Password</span>
+          <button id="setup-close-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="setup-body">
+          <p class="setup-hint" id="setup-step-hint">Enter your CURRENT 4 dates to verify your identity before setting a new password.</p>
+          <div class="sequence-slots">
+            <span class="slot" id="slot-0">?</span>
+            <span class="slot" id="slot-1">?</span>
+            <span class="slot" id="slot-2">?</span>
+            <span class="slot" id="slot-3">?</span>
+          </div>
+          <div id="setup-error-msg" style="color: #ef4444; font-size: 12px; font-weight: bold; text-align: center; margin: 4px 0; min-height: 16px;"></div>
+          <div class="setup-grid" id="setup-grid"></div>
+          <div class="setup-buttons">
+            <button id="setup-clear-btn" class="btn secondary">Clear</button>
+            <button id="setup-action-btn" class="btn primary" disabled>Verify Current</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD EVENT DIALOG -->
+      <div id="event-modal" class="modal hidden">
+        <div class="modal-header">
+          <span>New Calendar Event</span>
+          <button id="event-close-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="event-body">
+          <label>Title</label>
+          <input type="text" id="event-title-input" placeholder="e.g. Doctor Appointment" />
+          <label>Time</label>
+          <input type="time" id="event-time-input" value="10:00" />
+          <label>Notes</label>
+          <textarea id="event-notes-input" placeholder="Notes..."></textarea>
+          <button id="save-event-btn" class="btn primary full-width">Add Event</button>
+        </div>
+      </div>
+
+      <!-- ABOUT DEVELOPER MODAL -->
+      <div id="creator-modal" class="modal hidden">
+        <div class="modal-header">
+          <span>About This App</span>
+          <button id="creator-close-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="setup-body" style="text-align: center; align-items: center; padding: 24px 20px;">
+          <div style="width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 2px solid #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.35); margin: 0 auto 14px auto;">
+            <img src="logo.png" alt="Bot Logo" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          </div>
+          <h2 style="font-size: 22px; font-weight: 800; color: #f8fafc; margin-bottom: 6px;">Calendar-Hidex-App</h2>
+          <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Privacy-focused calendar with a secure, hidden vault.</p>
+          <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 6px 14px; border-radius: 14px; font-size: 13px; color: #38bdf8; margin-bottom: 18px; display: inline-block;">
+            Designed and developed by <strong>Ankush Kumar</strong>
+          </div>
+          <div style="width: 100%; border-top: 1px solid #334155; padding-top: 14px; font-size: 12px; color: #64748b; line-height: 1.6;">
+            © 2026 Ankush Kumar<br>
+            Version 1.0.0
+          </div>
+        </div>
+      </div>
+
+      <!-- HIDDEN FILE INPUT FOR ANY FILE TYPE -->
+      <input type="file" id="media-file-input" multiple accept="*/*" style="display: none;" />
+
+    </div> <!-- End screen -->
+  </div> <!-- End phone-container -->
+
+  <!-- Simulation Control Sidebar -->
+  <div class="controls-panel">
+    <h3><i class="fa-solid fa-flask"></i> App Tester & Persistence Simulation</h3>
+    <p class="info-p">This simulator demonstrates how the disguised calendar, 2-step in-vault password change, multi-file support, and private browser work in action.</p>
+
+    <div class="control-card highlight-card">
+      <h4><i class="fa-solid fa-key"></i> How to Unlock</h4>
+      <p>1. On the calendar screen, tap dates <strong>7 &rarr; 14 &rarr; 21 &rarr; 28</strong> in sequence.</p>
+      <p>2. The Secret Vault will pop open!</p>
+      <p>3. Tap the yellow <strong>Panic Lock</strong> button in the top right at any time to return immediately to the calendar.</p>
+    </div>
+
+    <div class="control-card">
+      <h4><i class="fa-solid fa-trash-can-arrow-up"></i> Test Uninstall & Reinstall</h4>
+      <p>Click below to simulate uninstalling the app from the phone:</p>
+      <button id="simulate-uninstall-btn" class="btn danger full-width">
+        <i class="fa-solid fa-dumpster"></i> Simulate App Uninstall
+      </button>
+      <p class="test-note" id="uninstall-status">App is currently installed. Files stored in simulated <code>Documents/.calendar_vault</code>.</p>
+      <button id="simulate-reinstall-btn" class="btn primary full-width" style="display: none; margin-top: 8px;">
+        <i class="fa-solid fa-download"></i> Simulate Reinstall App
+      </button>
+    </div>
+
+    <div class="control-card">
+      <h4><i class="fa-solid fa-folder-tree"></i> Flutter Android Project</h4>
+      <p>The complete Flutter Android code has been compiled and packaged in:</p>
+      <code class="code-box">C:\Users\akrk0\.gemini\antigravity\scratch\calendar_vault_app</code>
+      <p style="margin-top: 8px;">New Features Implemented:</p>
+      <ul class="feature-list">
+        <li><strong>Onboarding Guide:</strong> First-launch walkthrough modal</li>
+        <li><strong>Password Verification:</strong> Current password required before change</li>
+        <li><strong>All File Formats:</strong> PDF, Word, Excel, Audio, Videos, Photos</li>
+        <li><strong>Private Browser:</strong> Incognito web with direct vault downloads</li>
+        <li><strong>App Icon Disguises:</strong> Calculator, Notes, Clock, Weather</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
