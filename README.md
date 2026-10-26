@@ -8,9 +8,9 @@ A disguised, fully functional Calendar App hiding a secure, military-grade encry
 
 **[⬇️ Download Calendar Hidex APK (v1.0)](https://github.com/<USERNAME>/calendar_vault_app/releases/latest/download/Calendar_Hidex_App_v1.0.apk)**
 
-1. Android phone par upar wale link ko tap karein. APK download ho jayegi.
-2. Download hone ke baad file kholein. Agar Android bole "Install unknown apps", to browser (Chrome/Firefox) ko is permission ki ijazat dein.
-3. Install par tap karein aur app open karein.
+1. On your Android phone, tap the download link above. The APK will download.
+2. Once it’s downloaded, open the file. If Android asks for “Install unknown apps” permission, allow it for your browser (Chrome or Firefox).
+3. ap Install, then open the app.
 
 > Ye direct link GitHub **Releases** se milta hai, isliye click karte hi APK download shuru ho jaati hai.
 
