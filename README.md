@@ -145,7 +145,10 @@ build/app/outputs/flutter-apk/app-release.apk
 | **Decryption in Memory** | Files decrypted in isolated RAM/temp cache and purged on exit |
 
 ---
-
+## 📄 License
+ 
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+ 
 ## 👤 Developer & Credits
 - **Project**: Calendar Hidex App (`com.ankushkumar.calendarvault`)
 - **Author**: Ankush Kumar
